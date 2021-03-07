@@ -1,17 +1,18 @@
 <?php
 
-function statement($invoice, $plays)
+function statement($invoice, $plays): string
 {
     $totalAmount   = 0;
     $volumeCredits = 0;
 
-    $result = "Statement for {$invoice->customer} \n";
+    $result = "Statement for {$invoice->customer}<br>";
 
     $format = static function (float $value) {
         return '$' . number_format($value, 2);
     };
+
     foreach ($invoice->performances as $perf) {
-        $play       = $plays[$perf->playID];
+        $play       = $plays->{$perf->playID};
         $thisAmount = 0;
         switch ($play->type) {
             case 'tragedy':
@@ -36,12 +37,12 @@ function statement($invoice, $plays)
         if('comedy'=== $play->type) $volumeCredits += floor($perf->audience / 5);
         // print line for this order
         $result .= "{$play->name}: {$format($thisAmount/100)} 
-        ({$perf->audience} seats)\n";
+        ({$perf->audience} seats)<br>";
         $totalAmount += $thisAmount;
     }
 
-    $result .= "Amount owed is {$format($totalAmount/100)}\n";
-    $result .= "You earner {$volumeCredits} credits\n";
+    $result .= "Amount owed is {$format($totalAmount/100)}<br>";
+    $result .= "You earner {$volumeCredits} credits<br>";
 
     return $result;
 }
