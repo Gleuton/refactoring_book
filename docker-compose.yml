@@ -1,0 +1,13 @@
+version: "3.2"
+services:
+  php-refactoring:
+    container_name: php-refactoring
+    image: php
+    build:
+      context: .docker
+    volumes:
+      - ./:/var/www/html/
+    ports:
+      - "8082:80"
+    environment:
+      APACHE_RUN_USER: '#1000'
