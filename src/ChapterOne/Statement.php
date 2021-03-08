@@ -11,7 +11,7 @@ class Statement
         $totalAmount   = 0;
         $volumeCredits = 0;
 
-        $result = "Statement for {$invoice->customer}<br>";
+        $result = "Statement for {$invoice->customer}\n";
 
         $format = static function (float $value) {
             return '$' . number_format($value, 2);
@@ -43,12 +43,12 @@ class Statement
             if('comedy'=== $play->type) $volumeCredits += floor($perf->audience / 5);
             // print line for this order
             $result .= "{$play->name}: {$format($thisAmount/100)} 
-        ({$perf->audience} seats)<br>";
+        ({$perf->audience} seats)\n";
             $totalAmount += $thisAmount;
         }
 
-        $result .= "Amount owed is {$format($totalAmount/100)}<br>";
-        $result .= "You earner {$volumeCredits} credits<br>";
+        $result .= "Amount owed is {$format($totalAmount/100)}\n";
+        $result .= "You earner {$volumeCredits} credits\n";
 
         return $result;
     }
