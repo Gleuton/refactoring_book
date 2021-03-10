@@ -41,21 +41,21 @@ class Statement
     {
         switch ($play->type) {
             case 'tragedy':
-                $amount = 40000;
+                $result = 40000;
                 if ($perf->audience > 30) {
-                    $amount += 1000 * ($perf->audience - 30);
+                    $result += 1000 * ($perf->audience - 30);
                 }
                 break;
             case 'comedy':
-                $amount = 30000;
+                $result = 30000;
                 if ($perf->audience > 20) {
-                    $amount += 10000 + 500 * ($perf->audience - 20);
+                    $result += 10000 + 500 * ($perf->audience - 20);
                 }
-                $amount += 300 * $perf->audience;
+                $result += 300 * $perf->audience;
                 break;
             default:
                 throw new \Error("unknown type: {$play->type}");
         }
-        return $amount;
+        return $result;
     }
 }
