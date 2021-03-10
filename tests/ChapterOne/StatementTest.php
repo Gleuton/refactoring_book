@@ -20,8 +20,12 @@ You earner 47 credits
 
     public function testStatement(): void
     {
-        $invoices_file = file_get_contents(__DIR__ . '/json/invoices.json');
-        $plays_file    = file_get_contents(__DIR__ . '/json/plays.json');
+        $invoices_file = file_get_contents(
+            __DIR__ . '/json/invoices.json'
+        );
+        $plays_file    = file_get_contents(
+            __DIR__ . '/json/plays.json'
+        );
 
         try {
             $invoices = json_decode(
