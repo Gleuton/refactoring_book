@@ -42,7 +42,7 @@ You earner 47 credits
                 JSON_THROW_ON_ERROR
             );
 
-            $text = (new Statement())->statement($invoices, $plays);
+            $text = (new Statement($invoices, $plays))->statement();
             self::assertEquals($text, $this->result);
         } catch (\JsonException $e) {
             echo $e->getMessage();

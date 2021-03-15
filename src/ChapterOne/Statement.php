@@ -6,27 +6,38 @@ namespace Refactoring\ChapterOne;
 
 class Statement
 {
-    public function statement($invoice, $plays): string
+    private object $plays;
+    private object $invoice;
+
+    public function __construct(object $invoice, object $plays)
+    {
+        $this->plays   = $plays;
+        $this->invoice = $invoice;
+    }
+
+    public function statement(): string
     {
         $totalAmount   = 0;
         $volumeCredits = 0;
 
-        $result = "Statement for {$invoice->customer}\n";
+        $result = "Statement for {$this->invoice->customer}\n";
 
         $format = static function (float $value) {
             return '$' . number_format($value, 2);
         };
 
-        foreach ($invoice->performances as $perf) {
-            $play       = $plays->{$perf->playID};
+        foreach ($this->invoice->performances as $perf) {
+            $play       = $this->playFor($perf);
             $thisAmount = $this->amountFor($perf, $play);
 
             // add volume credits
             $volumeCredits += max($perf->audience - 30, 0);
             // add extra credit for every ten comedy attendees
-            if('comedy'=== $play->type) $volumeCredits += floor($perf->audience / 5);
+            if ('comedy' === $play->type) {
+                $volumeCredits += floor($perf->audience / 5);
+            }
             // print line for this order
-            $result .= "{$play->name}: {$format($thisAmount/100)} 
+            $result      .= "{$play->name}: {$format($thisAmount/100)} 
         ({$perf->audience} seats)\n";
             $totalAmount += $thisAmount;
         }
@@ -35,6 +46,11 @@ class Statement
         $result .= "You earner {$volumeCredits} credits\n";
 
         return $result;
+    }
+
+    private function playFor($perf)
+    {
+        return $this->plays->{$perf->playID};
     }
 
     public function amountFor($perf, $play)
