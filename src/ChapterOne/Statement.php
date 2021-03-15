@@ -28,21 +28,21 @@ class Statement
             // add volume credits
             $volumeCredits += $this->volumeCreditsFor($perf);
             // print line for this order
-            $result      .= "{$this->playFor($perf)->name}: {$this->format(
-                $this->amountFor($perf)/100
+            $result      .= "{$this->playFor($perf)->name}: {$this->usd(
+                $this->amountFor($perf)
                 )} 
         ({$perf->audience} seats)\n";
             $totalAmount += $this->amountFor($perf);
         }
 
-        $result .= "Amount owed is {$this->format($totalAmount/100)}\n";
+        $result .= "Amount owed is {$this->usd($totalAmount)}\n";
 
         return $result . "You earner {$volumeCredits} credits\n";
     }
 
-    private function format(float $value): string
+    private function usd(float $value): string
     {
-        return '$' . number_format($value, 2);
+        return '$' . number_format($value/100, 2);
     }
     private function playFor($perf)
     {
