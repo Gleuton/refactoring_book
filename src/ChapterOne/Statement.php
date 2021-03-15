@@ -27,17 +27,16 @@ class Statement
         };
 
         foreach ($this->invoice->performances as $perf) {
-            $play       = $this->playFor($perf);
-            $thisAmount = $this->amountFor($perf, $play);
+            $thisAmount = $this->amountFor($perf, $this->playFor($perf));
 
             // add volume credits
             $volumeCredits += max($perf->audience - 30, 0);
             // add extra credit for every ten comedy attendees
-            if ('comedy' === $play->type) {
+            if ('comedy' === $this->playFor($perf)->type) {
                 $volumeCredits += floor($perf->audience / 5);
             }
             // print line for this order
-            $result      .= "{$play->name}: {$format($thisAmount/100)} 
+            $result      .= "{$this->playFor($perf)->name}: {$format($thisAmount/100)} 
         ({$perf->audience} seats)\n";
             $totalAmount += $thisAmount;
         }
