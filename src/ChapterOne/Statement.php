@@ -4,6 +4,8 @@
 namespace Refactoring\ChapterOne;
 
 
+use Error;
+
 class Statement
 {
     private object $plays;
@@ -22,26 +24,26 @@ class Statement
 
         $result = "Statement for {$this->invoice->customer}\n";
 
-        $format = static function (float $value) {
-            return '$' . number_format($value, 2);
-        };
-
         foreach ($this->invoice->performances as $perf) {
             // add volume credits
             $volumeCredits += $this->volumeCreditsFor($perf);
             // print line for this order
-            $result      .= "{$this->playFor($perf)->name}: {$format(
+            $result      .= "{$this->playFor($perf)->name}: {$this->format(
                 $this->amountFor($perf)/100
                 )} 
         ({$perf->audience} seats)\n";
             $totalAmount += $this->amountFor($perf);
         }
 
-        $result .= "Amount owed is {$format($totalAmount/100)}\n";
+        $result .= "Amount owed is {$this->format($totalAmount/100)}\n";
 
         return $result . "You earner {$volumeCredits} credits\n";
     }
 
+    private function format(float $value): string
+    {
+        return '$' . number_format($value, 2);
+    }
     private function playFor($perf)
     {
         return $this->plays->{$perf->playID};
@@ -73,7 +75,7 @@ class Statement
                 $result += 300 * $perf->audience;
                 break;
             default:
-                throw new \Error("unknown type: {$this->playFor($perf)->type}");
+                throw new Error("unknown type: {$this->playFor($perf)->type}");
         }
         return $result;
     }
