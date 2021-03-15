@@ -25,19 +25,29 @@ class Statement
         $result = "Statement for {$this->invoice->customer}\n";
 
         foreach ($this->invoice->performances as $perf) {
-            // add volume credits
-            $volumeCredits += $this->volumeCreditsFor($perf);
+
             // print line for this order
-            $result      .= "{$this->playFor($perf)->name}: {$this->usd(
+            $result .= "{$this->playFor($perf)->name}: {$this->usd(
                 $this->amountFor($perf)
                 )} 
         ({$perf->audience} seats)\n";
             $totalAmount += $this->amountFor($perf);
         }
 
+        $volumeCredits = $this->totalVolumeCredits();
+
         $result .= "Amount owed is {$this->usd($totalAmount)}\n";
 
         return $result . "You earner {$volumeCredits} credits\n";
+    }
+
+    private function totalVolumeCredits(){
+        $result = 0;
+        foreach ($this->invoice->performances as $perf) {
+            // add volume credits
+            $result += $this->volumeCreditsFor($perf);
+        }
+        return $result;
     }
 
     private function usd(float $value): string
