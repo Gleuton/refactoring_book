@@ -27,7 +27,7 @@ class Statement
         };
 
         foreach ($this->invoice->performances as $perf) {
-            $thisAmount = $this->amountFor($perf, $this->playFor($perf));
+            $thisAmount = $this->amountFor($perf);
 
             // add volume credits
             $volumeCredits += max($perf->audience - 30, 0);
@@ -52,9 +52,9 @@ class Statement
         return $this->plays->{$perf->playID};
     }
 
-    public function amountFor($perf, $play)
+    public function amountFor($perf)
     {
-        switch ($play->type) {
+        switch ($this->playFor($perf)->type) {
             case 'tragedy':
                 $result = 40000;
                 if ($perf->audience > 30) {
@@ -69,7 +69,7 @@ class Statement
                 $result += 300 * $perf->audience;
                 break;
             default:
-                throw new \Error("unknown type: {$play->type}");
+                throw new \Error("unknown type: {$this->playFor($perf)->type}");
         }
         return $result;
     }
