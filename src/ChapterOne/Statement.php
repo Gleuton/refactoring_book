@@ -27,24 +27,19 @@ class Statement
         };
 
         foreach ($this->invoice->performances as $perf) {
-            $thisAmount = $this->amountFor($perf);
-
             // add volume credits
-            $volumeCredits += max($perf->audience - 30, 0);
-            // add extra credit for every ten comedy attendees
-            if ('comedy' === $this->playFor($perf)->type) {
-                $volumeCredits += floor($perf->audience / 5);
-            }
+            $volumeCredits += $this->volumeCreditsFor($perf);
             // print line for this order
-            $result      .= "{$this->playFor($perf)->name}: {$format($thisAmount/100)} 
+            $result      .= "{$this->playFor($perf)->name}: {$format(
+                $this->amountFor($perf)/100
+                )} 
         ({$perf->audience} seats)\n";
-            $totalAmount += $thisAmount;
+            $totalAmount += $this->amountFor($perf);
         }
 
         $result .= "Amount owed is {$format($totalAmount/100)}\n";
-        $result .= "You earner {$volumeCredits} credits\n";
 
-        return $result;
+        return $result . "You earner {$volumeCredits} credits\n";
     }
 
     private function playFor($perf)
@@ -52,7 +47,16 @@ class Statement
         return $this->plays->{$perf->playID};
     }
 
-    public function amountFor($perf)
+    private function volumeCreditsFor($perf){
+        $result = max($perf->audience - 30, 0);
+        // add extra credit for every ten comedy attendees
+        if ('comedy' === $this->playFor($perf)->type) {
+            $result += floor($perf->audience / 5);
+        }
+        return $result;
+    }
+
+    private function amountFor($perf)
     {
         switch ($this->playFor($perf)->type) {
             case 'tragedy':
