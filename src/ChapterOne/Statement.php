@@ -19,32 +19,35 @@ class Statement
 
     public function statement(): string
     {
-        $totalAmount   = 0;
-        $volumeCredits = 0;
+        $totalAmount = $this->totalAmount();
 
         $result = "Statement for {$this->invoice->customer}\n";
 
         foreach ($this->invoice->performances as $perf) {
-
             // print line for this order
             $result .= "{$this->playFor($perf)->name}: {$this->usd(
                 $this->amountFor($perf)
-                )} 
-        ({$perf->audience} seats)\n";
-            $totalAmount += $this->amountFor($perf);
+                )} ({$perf->audience} seats)\n";
         }
-
-        $volumeCredits = $this->totalVolumeCredits();
 
         $result .= "Amount owed is {$this->usd($totalAmount)}\n";
 
-        return $result . "You earner {$volumeCredits} credits\n";
+        return $result . "You earner {$this->totalVolumeCredits()} credits\n";
     }
 
-    private function totalVolumeCredits(){
+    private function totalAmount(): float
+    {
         $result = 0;
         foreach ($this->invoice->performances as $perf) {
-            // add volume credits
+            $result += $this->amountFor($perf);
+        }
+        return $result;
+    }
+
+    private function totalVolumeCredits(): float
+    {
+        $result = 0;
+        foreach ($this->invoice->performances as $perf) {
             $result += $this->volumeCreditsFor($perf);
         }
         return $result;
@@ -52,14 +55,16 @@ class Statement
 
     private function usd(float $value): string
     {
-        return '$' . number_format($value/100, 2);
+        return '$' . number_format($value / 100, 2);
     }
-    private function playFor($perf)
+
+    private function playFor($perf): object
     {
         return $this->plays->{$perf->playID};
     }
 
-    private function volumeCreditsFor($perf){
+    private function volumeCreditsFor($perf): float
+    {
         $result = max($perf->audience - 30, 0);
         // add extra credit for every ten comedy attendees
         if ('comedy' === $this->playFor($perf)->type) {

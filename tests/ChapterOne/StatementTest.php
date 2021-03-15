@@ -8,12 +8,9 @@ use PHPUnit\Framework\TestCase;
 class StatementTest extends TestCase
 {
     private string $result = 'Statement for BigCo
-Hamlet: $650.00 
-        (55 seats)
-As You Like It: $580.00 
-        (35 seats)
-Othello: $500.00 
-        (40 seats)
+Hamlet: $650.00 (55 seats)
+As You Like It: $580.00 (35 seats)
+Othello: $500.00 (40 seats)
 Amount owed is $1,730.00
 You earner 47 credits
 ';
