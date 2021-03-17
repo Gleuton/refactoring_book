@@ -30,9 +30,10 @@ class Statement
 
     private function enrichPerformance($performance)
     {
-        $result         = $performance;
-        $result->play   = $this->playFor($performance);
-        $result->amount = $this->amountFor($performance);
+        $result                = $performance;
+        $result->play          = $this->playFor($performance);
+        $result->amount        = $this->amountFor($performance);
+        $result->volumeCredits = $this->volumeCreditsFor($performance);
         return $result;
     }
 
@@ -67,7 +68,7 @@ class Statement
     {
         $result = 0;
         foreach ($this->statementData->performances as $perf) {
-            $result += $this->volumeCreditsFor($perf);
+            $result += $perf->volumeCredits;
         }
         return $result;
     }
