@@ -69,7 +69,6 @@ class Statement
 
     private function amountFor($perf)
     {
-        var_dump($perf);
         switch ($perf->play->type) {
             case 'tragedy':
                 $result = 40000;
