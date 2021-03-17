@@ -4,11 +4,10 @@
 namespace Refactoring\ChapterOne;
 
 
-use Error;
 
 class StatementRender
 {
-    private object $statementData;
+    private Statement $statementData;
 
     public function __construct(object $invoice, object $plays)
     {
