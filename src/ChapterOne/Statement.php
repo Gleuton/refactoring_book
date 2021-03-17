@@ -14,13 +14,7 @@ class Statement
     public function __construct(object $invoice, object $plays)
     {
         $this->plays         = $plays;
-        $this->statementData = new \stdClass();
-
-        $this->statementData->customer     = $invoice->customer;
-        $this->statementData->performances = array_map(
-            [$this, 'enrichPerformance'],
-            $invoice->performances
-        );
+        $this->statementData = $this->createStatementData($invoice);
     }
 
     public function statement(): string
@@ -28,6 +22,24 @@ class Statement
         return $this->renderPlaneText($this->statementData);
     }
 
+    private function createStatementData($invoice): \stdClass
+    {
+        $data = new \stdClass();
+
+        $data->customer     = $invoice->customer;
+        $data->performances = array_map(
+            [$this, 'enrichPerformance'],
+            $invoice->performances
+        );
+        $data->totalAmount        = $this->totalAmount(
+            $data
+        );
+        $data->totalVolumeCredits = $this->totalVolumeCredits(
+            $data
+        );
+
+        return $data;
+    }
     private function enrichPerformance($performance)
     {
         $result                = $performance;
@@ -39,7 +51,7 @@ class Statement
 
     private function renderPlaneText($statementData): string
     {
-        $totalAmount = $this->totalAmount();
+        $totalAmount = $statementData->totalAmount;
 
         $result = "Statement for {$statementData->customer}\n";
 
@@ -52,22 +64,22 @@ class Statement
 
         $result .= "Amount owed is {$this->usd($totalAmount)}\n";
 
-        return $result . "You earner {$this->totalVolumeCredits()} credits\n";
+        return $result . "You earner {$statementData->totalVolumeCredits} credits\n";
     }
 
-    private function totalAmount(): float
+    private function totalAmount($data): float
     {
         $result = 0;
-        foreach ($this->statementData->performances as $perf) {
+        foreach ($data->performances as $perf) {
             $result += $perf->amount;
         }
         return $result;
     }
 
-    private function totalVolumeCredits(): float
+    private function totalVolumeCredits($data): float
     {
         $result = 0;
-        foreach ($this->statementData->performances as $perf) {
+        foreach ($data->performances as $perf) {
             $result += $perf->volumeCredits;
         }
         return $result;
