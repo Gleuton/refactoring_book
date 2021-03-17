@@ -15,7 +15,7 @@ Amount owed is $1,730.00
 You earner 47 credits
 ';
 
-    public function testStatement(): void
+    public function testStatementRenderReturnsPlainText(): void
     {
         $invoices_file = file_get_contents(
             __DIR__ . '/json/invoices.json'
@@ -39,7 +39,7 @@ You earner 47 credits
                 JSON_THROW_ON_ERROR
             );
 
-            $text = (new StatementRender($invoices, $plays))->renderPlaneText();
+            $text = (new StatementRender($invoices, $plays))->renderPlainText();
             self::assertEquals($text, $this->result);
         } catch (\JsonException $e) {
             echo $e->getMessage();
