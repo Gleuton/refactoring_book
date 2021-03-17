@@ -6,7 +6,7 @@ namespace Refactoring\ChapterOne;
 
 use Error;
 
-class Statement
+class StatementRender
 {
     private object $plays;
     private object $statementData;
@@ -17,9 +17,22 @@ class Statement
         $this->statementData = $this->createStatementData($invoice);
     }
 
-    public function statement(): string
+    public function renderPlaneText(): string
     {
-        return $this->renderPlaneText($this->statementData);
+        $totalAmount = $this->statementData->totalAmount;
+
+        $result = "Statement for {$this->statementData->customer}\n";
+
+        foreach ($this->statementData->performances as $perf) {
+            // print line for this order
+            $result .= "{$perf->play->name}: {$this->usd(
+                $perf->amount
+                )} ({$perf->audience} seats)\n";
+        }
+
+        $result .= "Amount owed is {$this->usd($totalAmount)}\n";
+
+        return $result . "You earner {$this->statementData->totalVolumeCredits} credits\n";
     }
 
     private function createStatementData($invoice): \stdClass
@@ -40,6 +53,7 @@ class Statement
 
         return $data;
     }
+
     private function enrichPerformance($performance)
     {
         $result                = $performance;
@@ -47,24 +61,6 @@ class Statement
         $result->amount        = $this->amountFor($performance);
         $result->volumeCredits = $this->volumeCreditsFor($performance);
         return $result;
-    }
-
-    private function renderPlaneText($statementData): string
-    {
-        $totalAmount = $statementData->totalAmount;
-
-        $result = "Statement for {$statementData->customer}\n";
-
-        foreach ($statementData->performances as $perf) {
-            // print line for this order
-            $result .= "{$perf->play->name}: {$this->usd(
-                $perf->amount
-                )} ({$perf->audience} seats)\n";
-        }
-
-        $result .= "Amount owed is {$this->usd($totalAmount)}\n";
-
-        return $result . "You earner {$statementData->totalVolumeCredits} credits\n";
     }
 
     private function totalAmount($data): float

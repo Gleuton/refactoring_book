@@ -2,10 +2,10 @@
 
 namespace Tests\ChapterOne;
 
-use Refactoring\ChapterOne\Statement;
+use Refactoring\ChapterOne\StatementRender;
 use PHPUnit\Framework\TestCase;
 
-class StatementTest extends TestCase
+class StatementRenderTest extends TestCase
 {
     private string $result = 'Statement for BigCo
 Hamlet: $650.00 (55 seats)
@@ -39,7 +39,7 @@ You earner 47 credits
                 JSON_THROW_ON_ERROR
             );
 
-            $text = (new Statement($invoices, $plays))->statement();
+            $text = (new StatementRender($invoices, $plays))->renderPlaneText();
             self::assertEquals($text, $this->result);
         } catch (\JsonException $e) {
             echo $e->getMessage();
