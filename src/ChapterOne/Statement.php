@@ -9,24 +9,43 @@ use Error;
 class Statement
 {
     private object $plays;
-    private object $invoice;
+    private object $statementData;
 
     public function __construct(object $invoice, object $plays)
     {
-        $this->plays   = $plays;
-        $this->invoice = $invoice;
+        $this->plays         = $plays;
+        $this->statementData = new \stdClass();
+
+        $this->statementData->customer     = $invoice->customer;
+        $this->statementData->performances = array_map(
+            [$this, 'enrichPerformance'],
+            $invoice->performances
+        );
     }
 
     public function statement(): string
     {
+        return $this->renderPlaneText($this->statementData);
+    }
+
+    private function enrichPerformance($performance)
+    {
+        $result         = $performance;
+        $result->play   = $this->playFor($performance);
+        $result->amount = $this->amountFor($performance);
+        return $result;
+    }
+
+    private function renderPlaneText($statementData): string
+    {
         $totalAmount = $this->totalAmount();
 
-        $result = "Statement for {$this->invoice->customer}\n";
+        $result = "Statement for {$statementData->customer}\n";
 
-        foreach ($this->invoice->performances as $perf) {
+        foreach ($statementData->performances as $perf) {
             // print line for this order
-            $result .= "{$this->playFor($perf)->name}: {$this->usd(
-                $this->amountFor($perf)
+            $result .= "{$perf->play->name}: {$this->usd(
+                $perf->amount
                 )} ({$perf->audience} seats)\n";
         }
 
@@ -38,8 +57,8 @@ class Statement
     private function totalAmount(): float
     {
         $result = 0;
-        foreach ($this->invoice->performances as $perf) {
-            $result += $this->amountFor($perf);
+        foreach ($this->statementData->performances as $perf) {
+            $result += $perf->amount;
         }
         return $result;
     }
@@ -47,7 +66,7 @@ class Statement
     private function totalVolumeCredits(): float
     {
         $result = 0;
-        foreach ($this->invoice->performances as $perf) {
+        foreach ($this->statementData->performances as $perf) {
             $result += $this->volumeCreditsFor($perf);
         }
         return $result;
@@ -67,7 +86,7 @@ class Statement
     {
         $result = max($perf->audience - 30, 0);
         // add extra credit for every ten comedy attendees
-        if ('comedy' === $this->playFor($perf)->type) {
+        if ('comedy' === $perf->play->type) {
             $result += floor($perf->audience / 5);
         }
         return $result;
@@ -75,7 +94,7 @@ class Statement
 
     private function amountFor($perf)
     {
-        switch ($this->playFor($perf)->type) {
+        switch ($perf->play->type) {
             case 'tragedy':
                 $result = 40000;
                 if ($perf->audience > 30) {
@@ -90,7 +109,7 @@ class Statement
                 $result += 300 * $perf->audience;
                 break;
             default:
-                throw new Error("unknown type: {$this->playFor($perf)->type}");
+                throw new Error("unknown type: {$perf->play->type}");
         }
         return $result;
     }
