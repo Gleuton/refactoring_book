@@ -4,8 +4,6 @@
 namespace Refactoring\ChapterOne;
 
 
-use Error;
-
 class Statement
 {
     public string $customer;
@@ -46,10 +44,11 @@ class Statement
 
     private function enrichPerformance($performance)
     {
-        $result                = $performance;
-        $result->play          = $this->playFor($performance);
-        $result->amount        = $this->amountFor($performance);
-        $result->volumeCredits = $this->volumeCreditsFor($performance);
+        $result = clone $performance;
+
+        $result->play          = $this->playFor($result);
+        $result->amount        = $this->amountFor($result);
+        $result->volumeCredits = $this->volumeCreditsFor($result);
         return $result;
     }
 
@@ -70,6 +69,7 @@ class Statement
 
     private function amountFor($perf)
     {
+        var_dump($perf);
         switch ($perf->play->type) {
             case 'tragedy':
                 $result = 40000;
@@ -85,7 +85,7 @@ class Statement
                 $result += 300 * $perf->audience;
                 break;
             default:
-                throw new Error("unknown type: {$perf->play->type}");
+                throw new \Error("unknown type: {$perf->play->type}");
         }
         return $result;
     }
