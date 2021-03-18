@@ -44,11 +44,15 @@ class Statement
 
     private function enrichPerformance($performance)
     {
-        $calculator = new PerformanceCalculator($performance, $this->playFor($performance));
+        $calculator = new PerformanceCalculator(
+            $performance,
+            $this->playFor($performance)
+        );
+
         $result = clone $performance;
         $result->play          = $calculator->play;
-        $result->amount        = $this->amountFor($result);
-        $result->volumeCredits = $this->volumeCreditsFor($result);
+        $result->amount        = $calculator->amount();
+        $result->volumeCredits = $calculator->volumeCredits();
         return $result;
     }
 
@@ -59,33 +63,6 @@ class Statement
 
     private function volumeCreditsFor($perf): float
     {
-        $result = max($perf->audience - 30, 0);
-        // add extra credit for every ten comedy attendees
-        if ('comedy' === $perf->play->type) {
-            $result += floor($perf->audience / 5);
-        }
-        return $result;
-    }
 
-    private function amountFor($perf): float
-    {
-        switch ($perf->play->type) {
-            case 'tragedy':
-                $result = 40000;
-                if ($perf->audience > 30) {
-                    $result += 1000 * ($perf->audience - 30);
-                }
-                break;
-            case 'comedy':
-                $result = 30000;
-                if ($perf->audience > 20) {
-                    $result += 10000 + 500 * ($perf->audience - 20);
-                }
-                $result += 300 * $perf->audience;
-                break;
-            default:
-                throw new \Error("unknown type: {$perf->play->type}");
-        }
-        return $result / 100;
     }
 }
