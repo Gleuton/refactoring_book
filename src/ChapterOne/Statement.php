@@ -44,9 +44,9 @@ class Statement
 
     private function enrichPerformance($performance)
     {
+        $calculator = new PerformanceCalculator($performance, $this->playFor($performance));
         $result = clone $performance;
-
-        $result->play          = $this->playFor($result);
+        $result->play          = $calculator->play;
         $result->amount        = $this->amountFor($result);
         $result->volumeCredits = $this->volumeCreditsFor($result);
         return $result;
