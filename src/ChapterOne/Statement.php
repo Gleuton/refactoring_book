@@ -67,7 +67,7 @@ class Statement
         return $result;
     }
 
-    private function amountFor($perf)
+    private function amountFor($perf): float
     {
         switch ($perf->play->type) {
             case 'tragedy':
@@ -86,6 +86,6 @@ class Statement
             default:
                 throw new \Error("unknown type: {$perf->play->type}");
         }
-        return $result;
+        return $result / 100;
     }
 }

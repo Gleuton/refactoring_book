@@ -31,6 +31,6 @@ class StatementRender
 
     private function usd(float $value): string
     {
-        return '$' . number_format($value / 100, 2);
+        return '$' . number_format($value, 2);
     }
 }
