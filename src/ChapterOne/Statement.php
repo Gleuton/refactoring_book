@@ -60,9 +60,4 @@ class Statement
     {
         return $this->plays->{$perf->playID};
     }
-
-    private function volumeCreditsFor($perf): float
-    {
-
-    }
 }
