@@ -1,9 +1,6 @@
 <?php
 
-
 namespace Refactoring\ChapterOne;
-
-
 
 class StatementRender
 {

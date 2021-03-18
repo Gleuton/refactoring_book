@@ -14,7 +14,7 @@ class Statement
 
     public function __construct(object $invoice, object $plays)
     {
-        $this->plays         = $plays;
+        $this->plays              = $plays;
         $this->customer           = $invoice->customer;
         $this->performances       = array_map(
             [$this, 'enrichPerformance'],
