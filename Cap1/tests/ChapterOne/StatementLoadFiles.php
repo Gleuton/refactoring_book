@@ -2,6 +2,8 @@
 
 namespace Tests\ChapterOne;
 
+use JsonException;
+
 class StatementLoadFiles
 {
     public object $invoices;
@@ -29,10 +31,8 @@ class StatementLoadFiles
                 512,
                 JSON_THROW_ON_ERROR
             );
-        } catch (\JsonException $e) {
+        } catch (JsonException $e) {
             echo $e->getMessage();
         }
     }
-    
-    
 }
