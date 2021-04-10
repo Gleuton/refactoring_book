@@ -1,2 +1,8 @@
+<<<<<<< HEAD
 .idea/
 
+=======
+.idea/*
+/vendor/
+.phpunit.result.*
+>>>>>>> parent of 4a07a8a (separating by chapters)

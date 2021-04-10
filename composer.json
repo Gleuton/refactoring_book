@@ -18,7 +18,7 @@
     }
   },
   "require-dev": {
-    "vendor/phpunit/phpunit": "^9.5"
+    "phpunit/phpunit": "^9.5"
   },
   "require": {
     "php": "^7.4",
