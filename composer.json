@@ -21,7 +21,7 @@
     "phpunit/phpunit": "^9.5"
   },
   "require": {
-    "php": "^7.4",
+    "php": "^8.0",
     "ext-json": "*"
   }
 }
