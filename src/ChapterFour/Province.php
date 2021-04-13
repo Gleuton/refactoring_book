@@ -85,7 +85,7 @@ class Province
         return min($this->demand, $this->totalProduction);
     }
 
-    public function demandCost()
+    public function demandCost(): float
     {
         $remainingDemand = $this->demand;
         $result          = 0;
@@ -104,6 +104,6 @@ class Province
     private function addProducer($producer): void
     {
         $this->producers[]     = $producer;
-        $this->totalProduction += $producer->production;
+        $this->totalProduction += $producer->getProduction();
     }
 }
