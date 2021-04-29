@@ -70,7 +70,7 @@ class Province
         return $this->demand - $this->totalProduction;
     }
 
-    public function proft(): float
+    public function profit(): float
     {
         return $this->demandValue() - $this->demandCost();
     }
@@ -91,19 +91,20 @@ class Province
         $result          = 0;
         usort(
             $this->producers,
-            static fn($a, $b) => $a->cost = $b->cost
+            static fn($a, $b) => ($a->getCost() - $b->getCost())
         );
         foreach ($this->producers as $p) {
             $contribution    = min($remainingDemand, $p->getProduction());
             $remainingDemand -= $contribution;
-            $result += $remainingDemand * $p->getCost();
+            $result          += $contribution * $p->getCost();
         }
         return $result;
     }
 
-    private function addProducer($producer): void
+    private function addProducer(Producer $producer): void
     {
         $this->producers[]     = $producer;
+
         $this->totalProduction += $producer->getProduction();
     }
 }
