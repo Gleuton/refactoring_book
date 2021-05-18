@@ -55,7 +55,7 @@ class Province
         $this->totalProduction += $totalProduction;
     }
 
-    public function setDemand(string $demand): void
+    public function setDemand(int $demand): void
     {
         $this->demand = $demand;
     }

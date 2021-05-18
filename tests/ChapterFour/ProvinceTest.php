@@ -30,4 +30,18 @@ class ProvinceTest extends TestCase
         self::assertEquals(-6, $this->province->shotFall());
         self::assertEquals(292, $this->province->profit());
     }
+
+    public function testZeroDemand(): void
+    {
+        $this->province->setDemand(0);
+        self::assertEquals(-25, $this->province->shotFall());
+        self::assertEquals(0, $this->province->profit());
+    }
+
+    public function testNegativeDemand(): void
+    {
+        $this->province->setDemand(-1);
+        self::assertEquals(-26, $this->province->shotFall());
+        self::assertEquals(-10, $this->province->profit());
+    }
 }
